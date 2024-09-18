@@ -1,46 +1,48 @@
 ﻿using Loja.Models;
+using Microsoft.VisualBasic;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Tls;
 using System.Data;
 
 namespace Loja.Repositorio
 {
     public class LoginRepositorio : ILoginRepositorio
     {
-        //Declarando a variavel de string de conexão com o banco de dados
-        private readonly string? _conexaoMySql;
+        //declarando a varivel de strig de conexão com o banco de dados
+        private readonly string? _conexaoMsql;
 
-        //Metodo de conexão com banco de dados
-        public LoginRepositorio(IConfiguration conf) => _conexaoMySql = conf.GetConnectionString("ConexaoMysql");
+        //METODO DA CONEXÃO COM O BANCO DE DADOS
+        public LoginRepositorio(IConfiguration conf) => _conexaoMsql = conf.GetConnectionString("ConexaoMsql");
 
-        //Metodo login
+        //metodo login
         public Usuario Login(string usuario, string senha)
         {
-            //Instranciando a variavel conexão
-            using (var conexao = new MySqlConnection(_conexaoMySql))
+            //INSTANCIANDO A VARIAVEL CONEXÃO 
+            using (var conexao = new MySqlConnection(_conexaoMsql))
             {
-                //Abrindo a conexão com o banco de dados
+                // ABRINDO A CONEXÃO COM O BANCO DE DADOS 
                 conexao.Open();
 
-                //Variavel cmd recebe o SELECT do banco de dados trazendo usuario e senha
-                MySqlCommand cmd = new MySqlCommand("Select * from tbLogin where usuario = @user and senha = @senha", conexao);
+                //VARIAVEL CMD QUE RECEBE O SELECT DO BANCO DE DADOS TRANZENDO O USUARIO E A SENHA 
+                MySqlCommand cmd = new MySqlCommand("select * from tbLogin where usuario =@user and senha = @senha", conexao);
 
-                //Pegando os parametros do usuario e senha do banco
+                //pegando os parametros do usuario e senha do banco
                 cmd.Parameters.Add("@user", MySqlDbType.VarChar).Value = usuario;
                 cmd.Parameters.Add("@senha", MySqlDbType.VarChar).Value = senha;
 
-                //Ler os dados que foram pegos do usuario e da senha
+                //ler os dados que foi pego do usuario e da senha
                 MySqlDataAdapter da = new MySqlDataAdapter(cmd);
 
-                //Guarda os dados lidos
+                //guarda os dados lidos
                 MySqlDataReader dr;
 
-                //Instanciando o modelo usuario
+                //instanciando a model usuario
                 Usuario user = new Usuario();
 
-                //Executando os comandos do MySQL para a variavel dr
+                //executando os comandos do MySQL para a variavel dr
                 dr = cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
-                //Verifica todos os usuarios que foram pegos no banco
+                //verifica todos os usuarios que foi pego no banco
                 while (dr.Read())
                 {
                     user.usuario = Convert.ToString(dr["usuario"]);

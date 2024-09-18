@@ -11,7 +11,7 @@ namespace Loja.Controllers
         private ILoginRepositorio _loginRepositorio;
         private Usuario _loginUsuario;
 
-        //Criando construtor
+        //CRIANDO CONSTRUTOR
         public HomeController(ILogger<HomeController> logger, ILoginRepositorio loginRepositorio, Usuario loginUsuario)
         {
             _logger = logger;
@@ -28,20 +28,28 @@ namespace Loja.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public IActionResult Login(Usuario user)
         {
             Usuario loginUser = _loginRepositorio.Login(user.usuario, user.senha);
             if (loginUser.usuario != null && loginUser.senha != null)
             {
-                //_loginRepositiorio.Login();
+                //_loginRepositorio.Login();
                 return new RedirectResult(Url.Action(nameof(Index)));
-            } else
+
+            }
+            else
             {
-                ViewData["msg"] = "Usuário / Senha inválidos";
+                ViewData["msg"] = "Usuario/Senha invalidos";
             }
             return View();
         }
+
+
+
+
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
